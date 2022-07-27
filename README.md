@@ -1,6 +1,7 @@
 # cancelable_retry
 
 [![pub package](https://img.shields.io/pub/v/cancelable_retry)](https://pub.dartlang.org/packages/cancelable_retry)
+![Analyze & Test](https://github.com/Innim/dart_cancelable_retry/actions/workflows/dart.yml/badge.svg?branch=main)
 [![innim lint](https://img.shields.io/badge/style-innim_lint-40c4ff.svg)](https://pub.dev/packages/innim_lint)
 
 Utility for wrapping an asynchronous function in automatic retry logic with ability to cancel it.
