@@ -5,10 +5,17 @@ import 'package:async/async.dart';
 
 final _rnd = math.Random();
 
+/// Utility for wrapping an asynchronous function
+/// in automatic retry logic with ability to cancel it.
+///
+/// Allows to automatically retry request on some condition.
+/// Retry logic implemented with exponential back-off,
+/// useful when making requests over network.
+/// If you don't need to continue retry - you can cancel retry.
+/// In such case last result will be returned.
 class CancelableRetry<T> {
   final FutureOr<T> Function() request;
   final FutureOr<bool> Function(T) retryIf;
-  //final FutureOr<bool> Function(Exception)? retryIfException;
   final Duration delayFactor;
   final Duration maxDelay;
   final int maxAttempts;
@@ -26,6 +33,12 @@ class CancelableRetry<T> {
     this.randomizationFactor = 0.25,
   });
 
+  /// Runs request and returns result.
+  ///
+  /// Will be finished when:
+  /// - request returns result, which not satisfies [retryIf] condition, or
+  /// - [cancel] is called, or
+  /// - [maxAttempts] is reached.
   Future<T> run() async {
     if (_running) throw StateError('Already running');
     _running = true;
@@ -53,7 +66,11 @@ class CancelableRetry<T> {
     return res;
   }
 
+  /// Cancels retries.
+  ///
+  /// In such case last result will be returned from [run].
   Future<void> cancel() async {
+    // TODO: mark for cancellation if request is running
     await _delay?.cancel();
   }
 
