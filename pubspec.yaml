@@ -1,6 +1,6 @@
 name: cancelable_retry
 description: Utility for wrapping an asynchronous function in automatic retry logic with ability to cancel it.
-version: 0.1.0
+version: 0.1.0+1
 homepage: https://github.com/innim/
 repository: https://github.com/Innim/dart_cancelable_retry
 issue_tracker: https://github.com/Innim/dart_cancelable_retry/issues
