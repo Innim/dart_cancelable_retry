@@ -23,6 +23,7 @@ class CancelableRetry<T> {
 
   CancelableOperation? _delay;
   bool _running = false;
+  bool _canceled = false;
 
   CancelableRetry(
     this.request, {
@@ -42,6 +43,7 @@ class CancelableRetry<T> {
   Future<T> run() async {
     if (_running) throw StateError('Already running');
     _running = true;
+    _canceled = false;
 
     var attempts = 0;
     T res;
@@ -49,7 +51,7 @@ class CancelableRetry<T> {
     // ignore: literal_only_boolean_expressions
     while (true) {
       res = await request();
-      if (attempts < maxAttempts && await retryIf(res)) {
+      if (!_canceled && attempts < maxAttempts && await retryIf(res)) {
         attempts++;
 
         final delay = _delay = CancelableOperation<void>.fromFuture(
@@ -70,7 +72,7 @@ class CancelableRetry<T> {
   ///
   /// In such case last result will be returned from [run].
   Future<void> cancel() async {
-    // TODO: mark for cancellation if request is running
+    _canceled = true;
     await _delay?.cancel();
   }
 
