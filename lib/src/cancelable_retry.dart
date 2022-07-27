@@ -34,12 +34,17 @@ class CancelableRetry<T> {
     this.randomizationFactor = 0.25,
   });
 
+  /// Returns `true` if retry is running.
+  bool get isRunning => _running;
+
   /// Runs request and returns result.
   ///
   /// Will be finished when:
   /// - request returns result, which not satisfies [retryIf] condition, or
   /// - [cancel] is called, or
   /// - [maxAttempts] is reached.
+  ///
+  /// Throws [StateError] if already running.
   Future<T> run() async {
     if (_running) throw StateError('Already running');
     _running = true;
