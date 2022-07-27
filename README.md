@@ -1,27 +1,47 @@
 # cancelable_retry
 
+[![pub package](https://img.shields.io/pub/v/cancelable_retry)](https://pub.dartlang.org/packages/cancelable_retry)
+[![innim lint](https://img.shields.io/badge/style-innim_lint-40c4ff.svg)](https://pub.dev/packages/innim_lint)
+
 Utility for wrapping an asynchronous function in automatic retry logic with ability to cancel it.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Allows to automatically retry request on some condition. Retry logic implemented with exponential back-off, useful when making requests over network.
+If you don't need to continue retry - you can cancel requests.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+To use this plugin, add `cancelable_retry` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+Create instance of `CancelableRetry` and call `run()`:
 
 ```dart
-const like = 'sample';
+import 'package:cancelable_retry/cancelable_retry.dart';
+
+final request = CancelableRetry(
+    // Provide request function
+    () => doSomeRequest(),
+    // Set conditions for retry
+    retryIf: (result) => result == "retry",
+    // Optional:
+    // - Define max retry attempts
+    maxAttempts: 8,
+    // - Define max delay between retries
+    maxDelay: const Duration(seconds: 30),
+    // - Tune delay between retries
+    delayFactor: const Duration(milliseconds: 200),
+    randomizationFactor: 0.25,
+  );
+
+// Run request
+final res = await request.run();
 ```
 
-## Additional information
+If you want to cancel request and retries, just call `cancel()`:
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+```dart
+await request.cancel();
+```
