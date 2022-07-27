@@ -9,7 +9,7 @@ Utility for wrapping an asynchronous function in automatic retry logic with abil
 ## Features
 
 Allows to automatically retry request on some condition. Retry logic implemented with exponential back-off, useful when making requests over network.
-If you don't need to continue retry - you can cancel requests.
+If you don't need to continue retry - you can cancel retry. In such case last result will be returned.
 
 ## Getting started
 
@@ -41,7 +41,7 @@ final request = CancelableRetry(
 final res = await request.run();
 ```
 
-If you want to cancel request and retries, just call `cancel()`:
+If you want to cancel retries, just call `cancel()`:
 
 ```dart
 await request.cancel();
